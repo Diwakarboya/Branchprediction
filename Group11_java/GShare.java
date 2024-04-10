@@ -20,7 +20,7 @@ public class GShare {
 	public GShare(int m, int n, String file) {
 		this.m = m;
 		this.n = n;
-		this.file_name = file.split("/")[1];
+		this.file_name = file;
 
 		this.prediction_table = new int[(int) Math.pow(2, m)];
 		Arrays.fill(this.prediction_table, 4);

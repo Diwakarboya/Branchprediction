@@ -16,8 +16,8 @@ public class Smith {
 	private static final String TAKEN = "t";
 
 	public Smith(int bits, String file) {
-		System.out.println("Received Bits : " + bits);
-		System.out.println("Received file : " + file);
+//		System.out.println("Received Bits : " + bits);
+//		System.out.println("Received file : " + file);
 
 		this.bits = bits;
 		this.counter = (int) Math.pow(2, bits - 1);
