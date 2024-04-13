@@ -6,6 +6,7 @@ public class sim {
 	private static final String BI_MODAL = "bimodal";
 	private static final String GSHARE = "gshare";
 	private static final String HYBRID = "hybrid";
+	private static final String SIMIH_DIFFERENTIAL = "smith_differential";
 
 	public static void simulator(String type, String[] arguments) {
 		if (type.equals(SMITH)) {
@@ -26,6 +27,11 @@ public class sim {
 					Integer.parseInt(arguments[2]), Integer.parseInt(arguments[3]), arguments[4]);
 			hybridPredictor.run();
 			hybridPredictor.printResults();
+		} else if (type.equals(SIMIH_DIFFERENTIAL)) {
+			Smith_Differential_Compression smithPredictor = new Smith_Differential_Compression(
+					Integer.parseInt(arguments[0]), arguments[1]);
+			smithPredictor.run();
+			smithPredictor.printResults();
 		}
 	}
 

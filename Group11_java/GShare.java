@@ -27,7 +27,7 @@ public class GShare {
 
 		this.global_history = "0".repeat(n);
 
-		this.change_value = 2;
+		this.change_value = 4;
 		this.predictions = 0;
 		this.mispredictions = 0;
 
