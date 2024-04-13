@@ -10,24 +10,22 @@ public class Smith_Differential_Compression {
 	private int predictions;
 	private String fileName;
 	private String[] lines;
-	private int differentailCounter;
+	private int differentialCounter;
+	private int adaptiveChangeCounter; // Counter to adjust changeValue based on performance
 
 	private static final String NOT_TAKEN = "n";
 	private static final String TAKEN = "t";
 
 	public Smith_Differential_Compression(int bits, String file) {
-//		System.out.println("Received Bits : " + bits);
-//		System.out.println("Received file : " + file);
-
 		this.bits = bits;
 		this.counter = (int) Math.pow(2, bits - 1);
 		this.changeValue = (int) Math.pow(2, bits - 1);
 		this.mispredictions = 0;
 		this.predictions = 0;
 		this.fileName = file.substring(file.lastIndexOf('/') + 1);
-		this.differentailCounter = 0;
+		this.differentialCounter = 0;
+		this.adaptiveChangeCounter = 0;
 
-		// Read the file
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			StringBuilder dataBuilder = new StringBuilder();
 			String line;
@@ -35,7 +33,6 @@ public class Smith_Differential_Compression {
 				dataBuilder.append(line).append("\n");
 			}
 			this.lines = dataBuilder.toString().split("\n");
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -51,12 +48,25 @@ public class Smith_Differential_Compression {
 
 	public void incrementCounter() {
 		counter++;
-		differentailCounter++;
+		differentialCounter++;
+		adaptiveChangeCounter++;
 	}
 
 	public void decrementCounter() {
 		counter--;
-		differentailCounter--;
+		differentialCounter--;
+		adaptiveChangeCounter--;
+	}
+
+	private void adjustThreshold() {
+		if (predictions % 10 == 0) { // Every 10 predictions, evaluate performance
+			if (adaptiveChangeCounter < -5) { // Too conservative, decrease threshold
+				changeValue = Math.max(changeValue - 1, 0);
+			} else if (adaptiveChangeCounter > 5) { // Too aggressive, increase threshold
+				changeValue = Math.min(changeValue + 1, (int) Math.pow(2, bits) - 1);
+			}
+			adaptiveChangeCounter = 0; // Reset after adjustment
+		}
 	}
 
 	public void run() {
@@ -67,29 +77,29 @@ public class Smith_Differential_Compression {
 
 			predictions++;
 
-			// Split the line into the address and the prediction
 			String[] addressAndPrediction = line.split(" ");
 			String prediction = addressAndPrediction[1];
 			String ourPrediction = predictBranch();
 
-			// Compare the prediction to the actual prediction
 			if (!ourPrediction.equals(prediction)) {
 				mispredictions++;
 			}
 
-			// Update the counter
 			if (prediction.equals(TAKEN)) {
 				incrementCounter();
 			} else if (prediction.equals(NOT_TAKEN)) {
 				decrementCounter();
 			}
 
-			if (differentailCounter > 3) {
-				differentailCounter = 3;
-			} else if (differentailCounter < -4) {
-				differentailCounter = -4;
+			adjustThreshold();
+
+			if (differentialCounter > 3) {
+				differentialCounter = 3;
+			} else if (differentialCounter < -4) {
+				differentialCounter = -4;
 			}
-			counter += differentailCounter;
+
+			counter += differentialCounter;
 		}
 	}
 
