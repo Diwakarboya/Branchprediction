@@ -1,9 +1,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Random;
 
-public class GShare {
+public class GShare_New {
 	public int m;
 	public int n;
 	private String file_name;
@@ -16,8 +18,11 @@ public class GShare {
 	private String[] lines;
 	private final String NOT_TAKEN = "n";
 	private final String TAKEN = "t";
+	private long prime1;
+	private long prime2;
+	private long modulo = (1L << 31) - 1;
 
-	public GShare(int m, int n, String file) {
+	public GShare_New(int m, int n, String file) {
 		this.m = m;
 		this.n = n;
 		this.file_name = file;
@@ -30,6 +35,7 @@ public class GShare {
 		this.change_value = 4;
 		this.predictions = 0;
 		this.mispredictions = 0;
+		initializePrimes();
 
 		// Read the file
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
@@ -44,29 +50,25 @@ public class GShare {
 		}
 	}
 
+	private void initializePrimes() {
+		Random rand = new Random();
+		prime1 = BigInteger.probablePrime(31, rand).longValue(); // Get a 31-bit prime
+		prime2 = BigInteger.probablePrime(31, rand).longValue(); // Get another 31-bit prime
+	}
+
 	public int getIndex(String address) {
-		String binary_address = Integer.toBinaryString(Integer.parseInt(address, 16));
-		String index_address = binary_address.substring(binary_address.length() - m - 2, binary_address.length() - 2);
+		int pc = Integer.parseInt(address, 16);
+		int historyValue = Integer.parseInt(global_history, 2);
 
-		String final_address;
-		if (n == 0) {
-			// Bimodal
-			final_address = index_address;
-		} else {
-			// Gshare
-			String n_bit_address = index_address.substring(index_address.length() - n);
-			int xor_n_bit = Integer.parseInt(n_bit_address, 2) ^ Integer.parseInt(global_history, 2);
-
-			final_address = index_address.substring(0, m - n)
-					+ String.format("%" + n + "s", Integer.toBinaryString(xor_n_bit)).replace(' ', '0');
-		}
-		return Integer.parseInt(final_address, 2);
+		long hash = (pc * prime1 + historyValue * prime2) % modulo; // Carter-Wegman hashing
+		return (int) (hash % (int) Math.pow(2, m)); // Reduce the hash to fit the prediction table size
 	}
 
 	public String predictBranch(int index) {
 		int index_counter = prediction_table[index];
 
 		// If the counter is >= change_value, then the branch is taken
+
 		if (index_counter >= change_value) {
 			return TAKEN;
 		} else {
@@ -105,15 +107,10 @@ public class GShare {
 	}
 
 	public void run() {
-		int bits = 0;
 		for (String line : lines) {
 			if (line.equals("")) {
 				continue;
 			}
-			int historyBit = Integer.parseInt("1");
-			bits = bits << 1;
-//			if(prediction_table[] == 't') bits |= 1;
-			bits &= (int) Math.pow(2, historyBit) - 1;
 
 			predictions++;
 
@@ -124,10 +121,6 @@ public class GShare {
 
 			// Get the index of the address and get the prediction
 			int index = getIndex(address);
-			bits &= (int) Math.pow(2, historyBit) - 1;
-			if (prediction.equalsIgnoreCase(TAKEN))
-				bits |= 1;
-			index = bits ^ index;
 			String ourPrediction = predictBranch(index);
 
 			// Compare the prediction to the actual prediction
