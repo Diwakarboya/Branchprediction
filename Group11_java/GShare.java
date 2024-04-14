@@ -105,15 +105,10 @@ public class GShare {
 	}
 
 	public void run() {
-		int bits = 0;
 		for (String line : lines) {
 			if (line.equals("")) {
 				continue;
 			}
-			int historyBit = Integer.parseInt("1");
-			bits = bits << 1;
-//			if(prediction_table[] == 't') bits |= 1;
-			bits &= (int) Math.pow(2, historyBit) - 1;
 
 			predictions++;
 
@@ -124,10 +119,6 @@ public class GShare {
 
 			// Get the index of the address and get the prediction
 			int index = getIndex(address);
-			bits &= (int) Math.pow(2, historyBit) - 1;
-			if (prediction.equalsIgnoreCase(TAKEN))
-				bits |= 1;
-			index = bits ^ index;
 			String ourPrediction = predictBranch(index);
 
 			// Compare the prediction to the actual prediction
@@ -166,7 +157,7 @@ public class GShare {
 		System.out.println("number of predictions:   \t " + predictions);
 		System.out.println("number of mispredictions:\t " + mispredictions);
 		System.out.printf("misprediction rate:      \t%.2f%%\n", getMissPredictionRate());
-		// printContents();
+		printContents();
 	}
 
 }
