@@ -7,6 +7,7 @@ public class sim {
 	private static final String GSHARE = "gshare";
 	private static final String HYBRID = "hybrid";
 	private static final String SIMIH_DIFFERENTIAL = "smith_differential";
+	private static final String GSHARE_NEW = "gshare_new";
 
 	public static void simulator(String type, String[] arguments) {
 		if (type.equals(SMITH)) {
@@ -32,6 +33,11 @@ public class sim {
 					Integer.parseInt(arguments[0]), arguments[1]);
 			smithPredictor.run();
 			smithPredictor.printResults();
+		} else if (type.equals(GSHARE_NEW)) {
+			GShare_New gsharePredictor = new GShare_New(Integer.parseInt(arguments[0]), Integer.parseInt(arguments[1]),
+					arguments[2]);
+			gsharePredictor.run();
+			gsharePredictor.printResults();
 		}
 	}
 
