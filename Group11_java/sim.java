@@ -34,7 +34,7 @@ public class sim {
 			smithPredictor.run();
 			smithPredictor.printResults();
 		} else if (type.equals(GSHARE_NEW)) {
-			GShare_New gsharePredictor = new GShare_New(Integer.parseInt(arguments[0]), Integer.parseInt(arguments[1]),
+			GShare_XOR_Folding gsharePredictor = new GShare_XOR_Folding(Integer.parseInt(arguments[0]), Integer.parseInt(arguments[1]),
 					arguments[2]);
 			gsharePredictor.run();
 			gsharePredictor.printResults();
