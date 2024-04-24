@@ -43,7 +43,7 @@ public class BiModal_XOR_Folding {
 
 	public int getIndex(String address) {
 		int fullAddress = Integer.parseInt(address, 16);
-		int foldedAddress = (fullAddress ^ (fullAddress >>> m)) & ((1 << m) - 1); // XOR folding
+		int foldedAddress = (fullAddress ^ (fullAddress >>> m)) & ((1 << m) - 1);
 		return foldedAddress;
 	}
 
@@ -100,9 +100,9 @@ public class BiModal_XOR_Folding {
 
 	public void getCommand() {
 		if (n == 0) {
-			System.out.println("./sim bimodal " + m + " " + file_name);
+			System.out.println("./sim bimodal_xor_folding " + m + " " + file_name);
 		} else {
-			System.out.println("./sim gshare " + m + " " + n + " " + file_name);
+			System.out.println("./sim gshare_xor_folding " + m + " " + n + " " + file_name);
 		}
 	}
 
@@ -110,10 +110,10 @@ public class BiModal_XOR_Folding {
 		System.out.println("COMMAND");
 		getCommand();
 		System.out.println("OUTPUT");
-		System.out.println("number of predictions:   \t " + predictions);
-		System.out.println("number of mispredictions:\t " + mispredictions);
+		System.out.println("number of predictions:   \t" + predictions);
+		System.out.println("number of mispredictions:\t" + mispredictions);
 		System.out.printf("misprediction rate:      \t%.2f%%\n", getMissPredictionRate());
-		// printContents();
+		printContents();
 	}
 
 }

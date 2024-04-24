@@ -117,10 +117,8 @@ public class Hybrid {
 		System.out.println("COMMAND");
 		System.out.println("./sim hybrid " + k + " " + gshare.m + " " + gshare.n + " " + bimodal.m + " " + fileName);
 		System.out.println("OUTPUT");
-		System.out.println("number of predictions:   \t " + predictions);
-		System.out.println("number of mispredictions:\t " + mispredictions);
-		// System.out.println("misprediction rate: \t" + ((double) mispredictions /
-		// predictions * 100) + "%");
+		System.out.println("number of predictions:   \t" + predictions);
+		System.out.println("number of mispredictions:\t" + mispredictions);
 		System.out.println("misprediction rate:      \t"
 				+ String.format("%.2f", ((double) mispredictions / predictions * 100)) + "%");
 

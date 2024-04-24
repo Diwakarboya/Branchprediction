@@ -4,16 +4,16 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class GShare_XOR_Folding {
-	public int m; // Number of bits used for indexing the prediction table
-	public int n; // Number of bits in the global history register
-	private String file_name; // File containing the branch traces
-	private int[] prediction_table; // Table storing prediction counters
-	private String global_history; // Binary string representing the global history
-	private int change_value; // Threshold for deciding taken/not taken
-	private final int saturation_value = 7; // Max value for counters in the table
-	private int predictions; // Total number of predictions made
-	private int mispredictions; // Total number of incorrect predictions
-	private String[] lines; // Array of lines read from the trace file
+	public int m;
+	public int n;
+	private String file_name;
+	private int[] prediction_table;
+	private String global_history;
+	private int change_value;
+	private final int saturation_value = 7;
+	private int predictions;
+	private int mispredictions;
+	private String[] lines;
 	private final String NOT_TAKEN = "n";
 	private final String TAKEN = "t";
 
@@ -22,9 +22,9 @@ public class GShare_XOR_Folding {
 		this.n = n;
 		this.file_name = file;
 		this.prediction_table = new int[(int) Math.pow(2, m)];
-		Arrays.fill(this.prediction_table, 4); // Initialize counters to mid-point for two-bit counters
+		Arrays.fill(this.prediction_table, 4);
 		this.global_history = "0".repeat(n);
-		this.change_value = 4; // Mid-point of saturation
+		this.change_value = 4;
 		this.predictions = 0;
 		this.mispredictions = 0;
 		readTraceFile(file);
@@ -45,10 +45,8 @@ public class GShare_XOR_Folding {
 
 	public int getIndex(String address) {
 		int addressInt = Integer.parseInt(address, 16);
-		int addressBits = addressInt & ((1 << m) - 1); // Extract lower m bits
+		int addressBits = addressInt & ((1 << m) - 1);
 		int historyBits = Integer.parseInt(global_history, 2);
-
-		// XOR fold to combine address and history into an m-bit index
 		int combinedIndex = addressBits ^ historyBits;
 		int foldedIndex = (combinedIndex ^ (combinedIndex >>> n)) & ((1 << m) - 1);
 		return foldedIndex;
@@ -104,12 +102,12 @@ public class GShare_XOR_Folding {
 
 	public void printResults() {
 		System.out.println("COMMAND");
-		System.out.println("./sim gshare " + m + " " + n + " " + file_name);
+		System.out.println("./sim gshare_xor_folding " + m + " " + n + " " + file_name);
 		System.out.println("OUTPUT");
-		System.out.println("number of predictions: \t " + predictions);
-		System.out.println("number of mispredictions:\t " + mispredictions);
+		System.out.println("number of predictions: \t" + predictions);
+		System.out.println("number of mispredictions:\t" + mispredictions);
 		System.out.printf("misprediction rate: \t%.2f%%\n", getMissPredictionRate());
-		// printContents();
+		printContents();
 	}
 
 	private double getMissPredictionRate() {

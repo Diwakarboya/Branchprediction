@@ -31,7 +31,6 @@ public class GShare {
 		this.predictions = 0;
 		this.mispredictions = 0;
 
-		// Read the file
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			StringBuilder data = new StringBuilder();
 			String line;
@@ -66,7 +65,6 @@ public class GShare {
 	public String predictBranch(int index) {
 		int index_counter = prediction_table[index];
 
-		// If the counter is >= change_value, then the branch is taken
 		if (index_counter >= change_value) {
 			return TAKEN;
 		} else {
@@ -112,19 +110,15 @@ public class GShare {
 
 			predictions++;
 
-			// Split the line into the address and the prediction
 			String[] addressAndPrediction = line.split(" ");
 			String address = addressAndPrediction[0];
 			String prediction = addressAndPrediction[1];
 
-			// Get the index of the address and get the prediction
 			int index = getIndex(address);
 			String ourPrediction = predictBranch(index);
 
-			// Compare the prediction to the actual prediction
 			increaseMissPrediction(ourPrediction, prediction);
 
-			// Update the prediction table and global history register
 			updatePredictionTable(index, prediction);
 			updateGlobalHistory(prediction);
 		}
@@ -154,8 +148,8 @@ public class GShare {
 		System.out.println("COMMAND");
 		getCommand();
 		System.out.println("OUTPUT");
-		System.out.println("number of predictions:   \t " + predictions);
-		System.out.println("number of mispredictions:\t " + mispredictions);
+		System.out.println("number of predictions:   \t" + predictions);
+		System.out.println("number of mispredictions:\t" + mispredictions);
 		System.out.printf("misprediction rate:      \t%.2f%%\n", getMissPredictionRate());
 		printContents();
 	}
